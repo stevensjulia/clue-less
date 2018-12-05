@@ -5,9 +5,9 @@ class GameBoard:
     def __init__(self):
         return
     def instantiate GameBoard(self):
-        ##create the number of spaces on our board and give them all a numeric so we can easilly get adjacent spaces 
-        ##from Space class
+        ##we need to create spaces to
         space = Space()
+        readingroom = Room()
 
     def get_space(space_id):
         return space_id
