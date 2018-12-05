@@ -1,5 +1,4 @@
 from notepad import Notepad
-from game import Game
 
 
 class Player:
@@ -49,6 +48,7 @@ class Player:
         return self.current_location
 
     def update_player_location(self, space_id):
+        from game import Game
         self.current_location = Game.get_space_by_id(space_id)
 
     def deactivate_player(self):
