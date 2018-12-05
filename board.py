@@ -5,7 +5,7 @@ class GameBoard:
     def __init__(self):
         return
     def get_adjacent_spaces(space_id):
-        return space_id
+        return adjacentSpaces
 
     def get_space(space_id):
         return space_id
