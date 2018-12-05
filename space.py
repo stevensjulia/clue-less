@@ -1,5 +1,3 @@
-from board import GameBoard
-
 
 class Space:
     space_id = None
@@ -10,10 +8,15 @@ class Space:
     def __init__(self, space_id, type):
         self.space_id = space_id
         self.type = type
-        self.get_adjacent_spaces = GameBoard.get_adjacent_spaces(space_id)
+        self.get_adjacent_spaces = None
 
     def set_occupied(self):
         self.occupied = True
+    ##this method needs help. Before, the space class was asking the board class which was asking the space class and 
+    ##none actually gave adjacent spaces.
+    def get_adjacent_spaces(space_id):
+        return space_id
+ 
 
 
 class Room(Space):
