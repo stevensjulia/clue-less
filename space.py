@@ -12,10 +12,12 @@ class Space:
 
     def set_occupied(self):
         self.occupied = True
-    ##this method needs help. Before, the space class was asking the board class which was asking the space class and 
-    ##none actually gave adjacent spaces.
+    
     def get_adjacent_spaces(space_id):
-        return space_id
+         ##this method needs help. Before, the space class was asking the board class which was asking the space class and 
+    ##none actually gave adjacent spaces.
+        if space_id+1 != null && space_id-1 != null 
+        return space_id+1, space_id-1
  
 
 
