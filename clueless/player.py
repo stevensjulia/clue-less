@@ -12,11 +12,11 @@ class Player:
     notepad = None
     cards = []
 
-    def __init__(self, name, selected_character, color, order, location):
+    def __init__(self, deck, name, selected_character, color, order, location):
         self.name = name
         self.selected_character = selected_character
         self.color = color
-        self.notepad = Notepad()
+        self.notepad = Notepad(deck)
         self.game_order = order
         self.current_location = location
         self.active = True
@@ -47,9 +47,8 @@ class Player:
     def get_player_location(self):
         return self.current_location
 
-    def update_player_location(self, space_id):
-        from game import Game
-        self.current_location = Game.get_space_by_id(space_id)
+    def update_player_location(self, space):
+        self.current_location = space
 
     def deactivate_player(self):
         self.active = False

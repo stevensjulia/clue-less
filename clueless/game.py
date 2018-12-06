@@ -30,6 +30,7 @@ class Game:
     }
 
     def __init__(self):
+        __instance = self
         self.deck = Deck()
         self.board = GameBoard()
 
@@ -38,14 +39,18 @@ class Game:
         initial_location = self.character_starting_location[character]
         color = self.character_color_mapping[character]
 
-        new_player = Player(player_name, selected_character=character, color=color,
+        new_player = Player(self.deck, player_name, selected_character=character, color=color,
                             order=player_num, location=initial_location)
         self.players.append(new_player)
 
     def initialize_game(self):
-        solution, player_cards = self.deck.initialize_game()
-        character, weapon, room = solution
-        self.case_file = CaseFile(character, weapon, room)
+        num_players = len(self.players)
+        if num_players != 0:
+            solution, player_cards = self.deck.initialize_game(num_players)
+            character, weapon, room = solution
+            self.case_file = CaseFile(character, weapon, room)
+        else:
+            raise Exception("There are no players in your game! Add players before initializing game.")
 
     def terminate_game(self):
         self.players = []

@@ -1,4 +1,3 @@
-from card import Card
 import random
 from collections import defaultdict
 
@@ -14,9 +13,9 @@ class Deck:
         weapons = ['Revolver', 'Lead Pipe', 'Rope', 'Candle Stick', 'Wrench', 'Knife']
         characters = ['Miss Scarlet', 'Mrs. Peacock', 'Colonel Mustard', 'Professor Plum', 'Mrs. White', 'Mr. Green']
 
-        self.characters = Deck.initialize_cards(characters, 'Character')
-        self.weapons = Deck.initialize_cards(weapons, 'Weapon')
-        self.rooms = Deck.initialize_cards(rooms, 'Room')
+        self.character_cards = Deck.initialize_cards(characters, 'Character')
+        self.weapon_cards = Deck.initialize_cards(weapons, 'Weapon')
+        self.room_cards = Deck.initialize_cards(rooms, 'Room')
 
     def get_characters(self):
         return self.character_cards
@@ -76,3 +75,18 @@ class Deck:
         players_cards = Deck.deal_cards(deck, num_players)
 
         return tuple(case_file), players_cards
+
+
+class Card:
+    value = None
+    card_type = None
+
+    def __init__(self, value, card_type):
+        self.value = value
+        self.card_type = card_type
+
+    def get_value(self):
+        return self.value
+
+    def get_type(self):
+        return self.card_type

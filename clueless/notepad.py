@@ -1,15 +1,12 @@
-from deck import Deck
-
-
 class Notepad:
     possibleCharacters = []
     possibleWeapons = []
     possibleRooms = []
 
-    def __init__(self):
-        self.possibleCharacters = Deck.get_characters()
-        self.possibleWeapons = Deck.get_weapons()
-        self.possibleRooms = Deck.get_rooms()
+    def __init__(self, deck):
+        self.possibleCharacters = deck.get_characters()
+        self.possibleWeapons = deck.get_weapons()
+        self.possibleRooms = deck.get_rooms()
 
     def get_possible_characters(self):
         return self.possibleCharacters
