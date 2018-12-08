@@ -36,16 +36,37 @@ class HomeSpace(Space):
     """
     def __init__(self, space_id, adjacent_spaces, suspects=None):
         super(Space, self).__init__(space_id, adjacent_spaces, suspects)
+    def set_occupied(self):
+        self.occupied = True
     
+class Hallway(Space):
+        """
+        The hallway spaces connect two rooms
+        """
+    def __init__(self, space_id, adjacent_spaces, suspects=None):
+        super(Space,self).__init__(space_id, adjacent_spaces, suspects)
+    def set_occupied(self):
+        self.occupied = True
+    
+    def set_notoccupied(self):
+        self.occupied = False
 
 class Room(Space):
     associated_card = None
     secret_passage = None
     weapons = None
+    
     def __init__(self, space_id, space_type, associated_card, weapons, secret_passage=False):
         Space.__init__(space_id, space_type)
         self.associated_card = associated_card
         self.secret_passage = secret_passage
+    
+    def set_occupied(self):
+        self.occupied = True
+    
+    def set_notoccupied(self):
+        self.occupied = False
+
     if weapons:
             self.weapons = weapons
         else:
