@@ -1,4 +1,5 @@
 from clueless.game import Game
+from utils.display import Display
 
 if __name__ == "__main__":
     current_game = Game()
@@ -25,6 +26,8 @@ if __name__ == "__main__":
 
     for player in players:
         print(player.name + " : " + player.selected_character)
+
+    Display.display_board(current_game.board)
 
     current_game.terminate_game()
 
