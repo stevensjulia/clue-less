@@ -1,38 +1,67 @@
 
+ROOM = 'Room'
+BALLROOM = 'Ballroom'
+BILLIARD_ROOM = 'Billiard Room'
+CONSERVATORY = 'Conservatory'
+DINING_ROOM = 'Dining Room'
+HALL = 'Hall'
+KITCHEN = 'Kitchen'
+LIBRARY = 'Library'
+LOUNGE = 'Lounge'
+STUDY = 'Study'
+
+STUDY_LIBRARY = 'three'
+STUDY_HALL = 'one'
+HALL_BILLIARD = 'four'
+HALL_LOUNGE = 'two'
+LOUNGE_DINING = 'five'
+LIBRARY_CONSERVATORY = 'eight'
+LIBRARY_BILLIARD = 'six'
+BILLIARD_BALLROOM = 'nine'
+BILLIARD_DINING = 'seven'
+DINING_KITCHEN = 'ten'
+CONSERVATORY_BALLROOM = 'eleven'
+BALLROOM_KITCHEN = 'twelve'
+
 class Display:
 
     @staticmethod
     def display_board(current_board):
-        study = ""
-        hall = ""
-        lounge = ""
-        library = " "
-        billiard = " "
-        dining = " "
-        conservatory = " "
-        ballroom = " "
-        kitchen = " "
-        one = ""
-        two = ""
-        three = ""
-        four = ""
-        five = ""
-        six = ""
-        seven = ""
-        eight = ""
-        nine = ""
-        ten = ""
-        eleven = ""
-        twelve = ""
-        study_w = "Revolver"
-        hall_w = ""
-        lounge_w = " "
-        library_w = " "
-        billiard_w = " "
-        dining_w = " "
-        conservatory_w = " "
-        ballroom_w = " "
-        kitchen_w = " "
+        # display room state
+        study = current_board.get_character_in_space(STUDY)
+        hall = current_board.get_character_in_space(HALL)
+        lounge = current_board.get_character_in_space(LOUNGE)
+        library = current_board.get_character_in_space(LIBRARY)
+        billiard = current_board.get_character_in_space(BILLIARD_ROOM)
+        dining = current_board.get_character_in_space(DINING_ROOM)
+        conservatory = current_board.get_character_in_space(CONSERVATORY)
+        ballroom = current_board.get_character_in_space(BALLROOM)
+        kitchen = current_board.get_character_in_space(KITCHEN)
+
+        # display hallway state
+        one = current_board.get_character_in_space(STUDY_HALL)
+        two = current_board.get_character_in_space(HALL_LOUNGE)
+        three = current_board.get_character_in_space(STUDY_LIBRARY)
+        four = current_board.get_character_in_space(HALL_BILLIARD)
+        five = current_board.get_character_in_space(LOUNGE_DINING)
+        six = current_board.get_character_in_space(LIBRARY_BILLIARD)
+        seven = current_board.get_character_in_space(BILLIARD_DINING)
+        eight = current_board.get_character_in_space(LIBRARY_CONSERVATORY)
+        nine = current_board.get_character_in_space(BILLIARD_BALLROOM)
+        ten = current_board.get_character_in_space(DINING_KITCHEN)
+        eleven = current_board.get_character_in_space(CONSERVATORY_BALLROOM)
+        twelve = current_board.get_character_in_space(BALLROOM_KITCHEN)
+
+        # display weapons
+        study_w = current_board.get_weapon_in_space(STUDY)
+        hall_w = current_board.get_weapon_in_space(HALL)
+        lounge_w = current_board.get_weapon_in_space(LOUNGE)
+        library_w = current_board.get_weapon_in_space(LIBRARY)
+        billiard_w = current_board.get_weapon_in_space(BILLIARD_ROOM)
+        dining_w = current_board.get_weapon_in_space(DINING_ROOM)
+        conservatory_w = current_board.get_weapon_in_space(CONSERVATORY)
+        ballroom_w = current_board.get_weapon_in_space(BALLROOM)
+        kitchen_w = current_board.get_weapon_in_space(KITCHEN)
 
         board = "\n" \
                 "--------------------------------------------------------------------------------\n" \
