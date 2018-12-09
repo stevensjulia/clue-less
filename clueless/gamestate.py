@@ -1,4 +1,4 @@
-from board import GameBoard
+from .board import GameBoard
  
  #GAME CONSTANTS
  

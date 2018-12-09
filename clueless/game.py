@@ -1,7 +1,7 @@
-from player import Player
-from deck import Deck
-from casefile import CaseFile
-from board import GameBoard
+from .player import Player
+from .deck import Deck
+from .casefile import CaseFile
+from .board import GameBoard
 
 
 class Game:

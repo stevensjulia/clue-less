@@ -8,8 +8,8 @@ if __name__ == "__main__":
     while True:
         try:
             # Note: Python 2.x users should use raw_input, the equivalent of 3.x's input
-            name = raw_input("\nPlease enter your name:\n")
-            char = raw_input("\nPlease choose a character from the following: Miss Scarlet, Mrs White, Mrs Peacock, "
+            name = input("\nPlease enter your name:\n")
+            char = input("\nPlease choose a character from the following: Miss Scarlet, Mrs White, Mrs Peacock, "
                              "Col Mustard, Prof Plum, Mr Green \n")
 
             # add players to game
@@ -17,7 +17,7 @@ if __name__ == "__main__":
             num_players += 1
 
             if num_players != 6:
-                again = raw_input("\nWould you like to add another character? Please enter 'yes' or 'no'.\n")
+                again = input("\nWould you like to add another character? Please enter 'yes' or 'no'.\n")
 
                 if again == 'yes':
                     continue
@@ -48,4 +48,3 @@ if __name__ == "__main__":
     Display.display_board(current_game.board)
 
     current_game.terminate_game()
-
