@@ -144,7 +144,7 @@ class internal:
         location = internal.current_game.board.locate_character(player_character)
 
         data = actions.get('turn_selection')
-        turn = internal.current_turn_options.get(data)
+        turn = internal.current_turn_options.get(int(data))
 
         if 'suggestion' in turn:
             internal.make_suggestion()

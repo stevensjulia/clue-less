@@ -292,6 +292,7 @@ class Room(Space):
         Space.__init__(self, space_id, adjacent_spaces)
         self.secret_passage = secret_passage
         self.weapons = weapons
+        self.suspects = []
 
     def set_occupied(self):
         self.occupied = True
