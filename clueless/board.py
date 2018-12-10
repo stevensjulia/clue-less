@@ -194,12 +194,13 @@ class GameBoard:
     def initialize_adjacent_spaces(self):
         # initalize adjacent spaces as actual Space objects rather than Strings
         for space in self.spaces:
+            space_obj = self.spaces.get(space)
             new_spaces = []
-            space_strings = space.adjacent_spaces
+            space_strings = space_obj.adjacent_spaces
             for val in space_strings:
                 new_spaces.append(self.spaces.get(val))
 
-            space.adjacent_spaces = new_spaces
+            space_obj.adjacent_spaces = new_spaces
 
     def get_space(self, space_id):
         return self.spaces.get(space_id)
