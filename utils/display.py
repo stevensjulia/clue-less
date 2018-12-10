@@ -89,7 +89,7 @@ class Display:
                 "| Conservatory |               |   Ballroom    |               |    Kitchen    |\n" \
                 "|              |               |               |               |               |\n" \
                 "|{conservatory:^14}|{eleven:^15}|{ballroom:^15}|{twelve:^15}|{kitchen:^15}|\n" \
-                "|{conservatory_w:^14}|               |{ballroom_w:^15}|               |{kitchen_w:^15}|\n" \
+                "|{conservatory_w:^14}|               |{ballroom_w:^15}|               |{kitchen_w}|\n" \
                 "|______________|_______________|_______________|_______________|_______________|\n".format(
                     study=study,
                     hall=hall,
@@ -120,8 +120,7 @@ class Display:
                     dining_w=dining_w,
                     conservatory_w=conservatory_w,
                     ballroom_w=ballroom_w,
-                    #kitchen_w=kitchen_w,
-                    kitchen_w = "kitchen_w"
+                    kitchen_w=kitchen_w,
                     )
 
         return board
