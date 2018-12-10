@@ -37,10 +37,11 @@ class ClientProtocol(asyncio.Protocol):
     def connection_made(self, transport):
         transport.write(self.message.encode())
         print('Data sent: {!r}'.format(self.message))
+        self.transport = transport
 
     def data_received(self, data):
         message = data.decode()
-        handle_message(message)
+        self.transport.write(handle_message(message))
 
     def connection_lost(self, exc):
         print('The server closed the connection')

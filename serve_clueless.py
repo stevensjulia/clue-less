@@ -31,12 +31,13 @@ class internal:
             # add player to game
             internal.current_game.add_player(player_name, character)
             internal.num_players += 1
-            internal.remaining_characters.pop(character)
+            internal.remaining_characters.remove(character)
 
             players_left_to_join = str(internal.expected_players - internal.num_players)
 
             if internal.num_players == internal.expected_players:
                 ServerProtocol.message_all_players('Everyone has joined! Lets begin.')
+                ServerProtocol.message_all_players(Display.display_board(internal.current_game.board))
             else:
                 ServerProtocol.message_all_players(
                     '{0} just joined the game as {1}. Waiting for {2} more player(s) to join!'.format(
