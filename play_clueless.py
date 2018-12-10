@@ -2,16 +2,14 @@ import asyncio
 import json
 
 
-def join_game():
+def join_game(message):
 
     while True:
         try:
-            num_players = input("\nHow many players will be joining the game?\n")
-            name = input("\nPlease enter your name:\n")
-            char = input("\nPlease choose a character from the following: Miss Scarlet, Mrs White, Mrs Peacock, "
-                         "Col Mustard, Prof Plum, Mr Green \n")
+            name = input("\nThanks for joining! Please enter your name:\n")
+            char = input("\n" + message + "\n")
 
-            vars = name + "," + char + "," + num_players
+            vars = name + "," + char
 
             break
 
@@ -20,13 +18,14 @@ def join_game():
             # better try again... Return to the start of the loop
             continue
 
-    print("\nThanks for starting a game!\n")
-
     sys_call = {"join_game": vars}
 
     return json.dumps(sys_call)
 
-    #Display.display_board(current_game.board)
+
+def handle_message(message):
+    if message.__contains__('Please choose from the remaining characters:'):
+        return join_game(message)
 
 
 class ClientProtocol(asyncio.Protocol):
@@ -40,7 +39,8 @@ class ClientProtocol(asyncio.Protocol):
         print('Data sent: {!r}'.format(self.message))
 
     def data_received(self, data):
-        print('Data received: {!r}'.format(data.decode()))
+        message = data.decode()
+        handle_message(message)
 
     def connection_lost(self, exc):
         print('The server closed the connection')
@@ -66,7 +66,7 @@ async def main(vars):
         transport.close()
 
 if __name__ == "__main__":
-    vars = join_game()
+    sys_call = {"enter_game": None}
 
-    asyncio.run(main(vars))
+    asyncio.run(main(json.dumps(sys_call)))
 

@@ -9,6 +9,7 @@ class internal:
     current_game = None
     num_players = 0
     expected_players = 0
+    remaining_characters = ["Miss Scarlet", "Mrs White", "Mrs Peacock", "Col Mustard", "Prof Plum", "Mr Green"]
 
     @staticmethod
     def handle_input(message, transport, peername):
@@ -21,15 +22,16 @@ class internal:
             character = data[1]
             if internal.num_players == 0:
                 expected_players = data[2]
-            internal.current_players[host] = {"name":player_name, "character":character, "transport":transport}
+            internal.current_players[host] = {"name": player_name, "character": character, "transport": transport}
 
             if internal.current_game is None:
                 internal.current_game = Game()
-                internal.expected_players = expected_players
+                internal.expected_players = int(expected_players)
 
             # add player to game
             internal.current_game.add_player(player_name, character)
             internal.num_players += 1
+            internal.remaining_characters.pop(character)
 
             players_left_to_join = str(internal.expected_players - internal.num_players)
 
@@ -46,6 +48,10 @@ class internal:
             internal.expected_players = 0
 
             return 'Please play again!'
+
+        if 'enter_game' in actions:
+            return "Please choose from the remaining characters: " + str(internal.remaining_characters)
+
 
     @staticmethod
     def message_all_players(message):
