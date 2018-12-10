@@ -36,29 +36,22 @@ class internal:
             players_left_to_join = str(internal.expected_players - internal.num_players)
 
             if internal.num_players == internal.expected_players:
-                return 'Everyone has joined! Lets begin.'
+                ServerProtocol.message_all_players('Everyone has joined! Lets begin.')
             else:
-                return '{0} just joined the game as {1}. Waiting for {2} more player(s) to join!'.format(
-                    player_name, character, players_left_to_join)
+                ServerProtocol.message_all_players(
+                    '{0} just joined the game as {1}. Waiting for {2} more player(s) to join!'.format(
+                        player_name, character, players_left_to_join))
 
         if 'terminate_game' in actions:
+            ServerProtocol.message_all_players('Please play again!')
             internal.current_players = {}
             internal.current_game = None
             internal.num_players = 0
             internal.expected_players = 0
 
-            return 'Please play again!'
-
         if 'enter_game' in actions:
-            return "Please choose from the remaining characters: " + str(internal.remaining_characters)
-
-
-    @staticmethod
-    def message_all_players(message):
-        for k in internal.current_players:
-            record = internal.current_players.get(k)
-            cur_transport = record.get("transport")
-            cur_transport.write(message.encode())
+            ServerProtocol.message_current_player(
+                transport, "Please choose from the remaining characters: " + str(internal.remaining_characters))
 
 
 class ServerProtocol(asyncio.Protocol):
@@ -73,14 +66,22 @@ class ServerProtocol(asyncio.Protocol):
         message = data.decode()
         print('Data received: {!r}'.format(message))
 
-        message = internal.handle_input(message, self.transport, self.peername)
-
-        print('Send: {!r}'.format(message))
-        internal.message_all_players(message)
+        internal.handle_input(message, self.transport, self.peername)
 
         if 'terminate_game' in message:
             print('Close the client socket')
             self.transport.close()
+
+    @staticmethod
+    def message_all_players(message):
+        for k in internal.current_players:
+            record = internal.current_players.get(k)
+            curr_transport = record.get("transport")
+            curr_transport.write(message.encode())
+
+    @staticmethod
+    def message_current_player(curr_transport, message):
+        curr_transport.write(message.encode())
 
 
 async def main():
