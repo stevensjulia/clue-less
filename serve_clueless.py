@@ -3,7 +3,7 @@ from utils.display import Display
 import asyncio
 
 
-class EchoServerProtocol(asyncio.Protocol):
+class ServerProtocol(asyncio.Protocol):
     def connection_made(self, transport):
         peername = transport.get_extra_info('peername')
         print('Connection from {}'.format(peername))
@@ -75,8 +75,8 @@ async def main():
     loop = asyncio.get_running_loop()
 
     server = await loop.create_server(
-        lambda: EchoServerProtocol(),
-        '54.183.100.229', 8888)
+        lambda: ServerProtocol(),
+        '172.31.15.89', 8888)
 
     async with server:
         await server.serve_forever()
