@@ -1,56 +1,32 @@
-from clueless.game import Game
-from utils.display import Display
 import asyncio
-import socket
+import json
 
 
-def play_game():
-    current_game = Game()
-    num_players = 0
+def join_game():
 
     while True:
         try:
-            # Note: Python 2.x users should use raw_input, the equivalent of 3.x's input
+            num_players = input("\nHow many players will be joining the game?\n")
             name = input("\nPlease enter your name:\n")
             char = input("\nPlease choose a character from the following: Miss Scarlet, Mrs White, Mrs Peacock, "
-                             "Col Mustard, Prof Plum, Mr Green \n")
+                         "Col Mustard, Prof Plum, Mr Green \n")
 
-            # add players to game
-            current_game.add_player(name, char)
-            num_players += 1
+            vars = name + "," + char + "," + num_players
 
-            if num_players != 6:
-                again = input("\nWould you like to add another character? Please enter 'yes' or 'no'.\n")
-
-                if again == 'yes':
-                    continue
-                else:
-                    break
-            else:
-                break
+            break
 
         except ValueError:
-            print("Sorry, I didn't understand that.")
+            print("\nSorry, I didn't understand that.")
             # better try again... Return to the start of the loop
             continue
 
-    print("Welcome to the game!\n")
+    print("\nThanks for starting a game!\n")
 
-    # initialize the game
-    current_game.initialize_game()
+    sys_call = {"join_game": vars}
 
-    weapons = current_game.get_cards().get_weapons()
-    characters = current_game.get_cards().get_characters()
-    rooms = current_game.get_cards().get_rooms()
+    return json.dumps(sys_call)
 
-    players = current_game.get_players()
-
-    for player in players:
-        print(player.name + " : " + player.selected_character)
-
-    Display.display_board(current_game.board)
-
-    current_game.terminate_game()
+    #Display.display_board(current_game.board)
 
 
 class ClientProtocol(asyncio.Protocol):
@@ -71,16 +47,15 @@ class ClientProtocol(asyncio.Protocol):
         self.on_con_lost.set_result(True)
 
 
-async def main():
+async def main(vars):
     # Get a reference to the event loop as we plan to use
     # low-level APIs.
     loop = asyncio.get_running_loop()
 
     on_con_lost = loop.create_future()
-    message = 'Hello World!'
 
     transport, protocol = await loop.create_connection(
-        lambda: ClientProtocol(message, on_con_lost, loop),
+        lambda: ClientProtocol(vars, on_con_lost, loop),
         '54.183.147.155', 8888)
 
     # Wait until the protocol signals that the connection
@@ -91,4 +66,7 @@ async def main():
         transport.close()
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    vars = join_game()
+
+    asyncio.run(main(vars))
+

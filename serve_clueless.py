@@ -10,7 +10,8 @@ class internal:
     num_players = 0
     expected_players = 0
 
-    def handle_input(message, peername):
+    @staticmethod
+    def handle_input(message, transport, peername):
         host, port = peername
         actions = json.loads(message)
 
@@ -20,7 +21,7 @@ class internal:
             character = data[1]
             if internal.num_players == 0:
                 expected_players = data[2]
-            internal.current_players[host] = (player_name, character)
+            internal.current_players[host] = {"name":player_name, "character":character, "transport":transport}
 
             if internal.current_game is None:
                 internal.current_game = Game()
@@ -30,10 +31,13 @@ class internal:
             internal.current_game.add_player(player_name, character)
             internal.num_players += 1
 
+            players_left_to_join = str(internal.expected_players - internal.num_players)
+
             if internal.num_players == internal.expected_players:
                 return 'Everyone has joined! Lets begin.'
             else:
-                return 'Thanks for joining!'
+                return '{0} just joined the game as {1}. Waiting for {2} more player(s) to join!'.format(
+                    player_name, character, players_left_to_join)
 
         if 'terminate_game' in actions:
             internal.current_players = {}
@@ -42,6 +46,14 @@ class internal:
             internal.expected_players = 0
 
             return 'Please play again!'
+
+    @staticmethod
+    def message_all_players(message):
+        for k in internal.current_players:
+            record = internal.current_players.get(k)
+            cur_transport = record.get("transport")
+            cur_transport.write(message.encode())
+
 
 class ServerProtocol(asyncio.Protocol):
 
@@ -55,10 +67,10 @@ class ServerProtocol(asyncio.Protocol):
         message = data.decode()
         print('Data received: {!r}'.format(message))
 
-        message = internal.handle_input(message, self.peername)
+        message = internal.handle_input(message, self.transport, self.peername)
 
         print('Send: {!r}'.format(message))
-        self.transport.write(message.encode())
+        internal.message_all_players(message)
 
         if 'terminate_game' in message:
             print('Close the client socket')

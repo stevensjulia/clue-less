@@ -1,8 +1,5 @@
-from clueless.game import Game
-from utils.display import Display
 import asyncio
 import json
-import socket
 
 
 def begin_game():
