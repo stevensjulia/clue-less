@@ -1,4 +1,4 @@
-from notepad import Notepad
+from .notepad import Notepad
 
 
 class Player:

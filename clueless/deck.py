@@ -11,7 +11,7 @@ class Deck:
         rooms = ['Kitchen', 'Conservatory', 'Dining Room', 'Ballroom', 'Study', 'Hall', 'Lounge', 'Library',
                  'Billiard Room']
         weapons = ['Revolver', 'Lead Pipe', 'Rope', 'Candle Stick', 'Wrench', 'Knife']
-        characters = ['Miss Scarlet', 'Mrs. Peacock', 'Colonel Mustard', 'Professor Plum', 'Mrs. White', 'Mr. Green']
+        characters = ['Miss Scarlet', 'Mrs Peacock', 'Col Mustard', 'Prof Plum', 'Mrs White', 'Mr Green']
 
         self.character_cards = Deck.initialize_cards(characters, 'Character')
         self.weapon_cards = Deck.initialize_cards(weapons, 'Weapon')

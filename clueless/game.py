@@ -1,7 +1,8 @@
-from player import Player
-from deck import Deck
-from casefile import CaseFile
-from board import GameBoard
+from .player import Player
+from .deck import Deck
+from .casefile import CaseFile
+from .board import GameBoard
+
 
 class Game:
     players = []
@@ -11,28 +12,22 @@ class Game:
 
     character_color_mapping = {
         'Miss Scarlet': 'red',
-        'Mrs. Peacock': 'blue',
-        'Colonel Mustard': 'yellow',
-        'Professor Plum': 'purple',
-        'Mrs. White': 'white',
-        'Mr. Green': 'green',
+        'Mrs Peacock': 'blue',
+        'Col Mustard': 'yellow',
+        'Prof Plum': 'purple',
+        'Mrs White': 'white',
+        'Mr Green': 'green',
     }
 
-
-    def __init__(self, players, turn_list=None, current_player=None, turn_status=None, current_suggestions=None, 
-                 suggestion_response=None, case_file=None, game-active=True, game_winner=None, game_board=None):
-        
+    def __init__(self):
         __instance = self
         self.deck = Deck()
         self.board = GameBoard()
-        self.players= players
-    
-   
- 
+
     def add_player(self, player_name, character):
         player_num = len(self.players)
-        initial_location = self.character_starting_location[character]
         color = self.character_color_mapping[character]
+        initial_location = self.board.initialize_character_position(character)
 
         new_player = Player(self.deck, player_name, selected_character=character, color=color,
                             order=player_num, location=initial_location)
@@ -64,3 +59,10 @@ class Game:
 
     def get_cards(self):
         return self.deck
+
+    def get_player_by_character(self, character):
+        for player in self.players:
+            if player.selected_character == character:
+                return player
+
+        raise ValueError("Invalid character name.")
