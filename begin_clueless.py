@@ -26,7 +26,10 @@ def begin_game():
 
     return json.dumps(sys_call)
 
-    #Display.display_board(current_game.board)
+
+def handle_message(message):
+    print(message)
+    return None
 
 
 class ClientProtocol(asyncio.Protocol):
@@ -37,10 +40,12 @@ class ClientProtocol(asyncio.Protocol):
 
     def connection_made(self, transport):
         transport.write(self.message.encode())
-        print('Data sent: {!r}'.format(self.message))
 
     def data_received(self, data):
-        print('Data received: {!r}'.format(data.decode()))
+        message = data.decode()
+        value = handle_message(message)
+        if value is not None:
+            self.transport.write(value.encode())
 
     def connection_lost(self, exc):
         print('The server closed the connection')

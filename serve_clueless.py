@@ -1,4 +1,5 @@
 from clueless.game import Game
+from clueless.board import Room
 from utils.display import Display
 import asyncio
 import json
@@ -11,49 +12,24 @@ class internal:
     num_players = 0
     expected_players = 0
     remaining_characters = ["Miss Scarlet", "Mrs White", "Mrs Peacock", "Col Mustard", "Prof Plum", "Mr Green"]
+    active_player = 1
 
     @staticmethod
-    def handle_input(message, transport, peername):
-        host, port = peername
+    def handle_input(message, transport):
         actions = json.loads(message)
 
         if 'join_game' in actions:
-            data = actions.get('join_game').split(',')
-            player_name = data[0]
-            character = data[1]
-            if internal.num_players == 0:
-                expected_players = data[2]
-            internal.current_players[host] = {"name": player_name, "character": character, "transport": transport}
-
-            if internal.current_game is None:
-                internal.current_game = Game()
-                internal.expected_players = int(expected_players)
-
-            # add player to game
-            internal.current_game.add_player(player_name, character)
-            internal.num_players += 1
-            internal.remaining_characters.remove(character)
-
-            players_left_to_join = str(internal.expected_players - internal.num_players)
-
-            if internal.num_players == internal.expected_players:
-                ServerProtocol.message_all_players('Everyone has joined! Lets begin.')
-                internal.begin_game()
-            else:
-                ServerProtocol.message_all_players(
-                    '{0} just joined the game as {1}. Waiting for {2} more player(s) to join!'.format(
-                        player_name, character, players_left_to_join))
+            internal.join_game(actions, transport)
 
         if 'terminate_game' in actions:
-            ServerProtocol.message_all_players('Please play again!')
-            internal.current_players = {}
-            internal.current_game = None
-            internal.num_players = 0
-            internal.expected_players = 0
+            internal.terminate_game()
 
         if 'enter_game' in actions:
             ServerProtocol.message_current_player(
                 transport, "Please choose from the remaining characters: " + str(internal.remaining_characters))
+
+        if 'begin_turn' in actions:
+            internal.begin_turn(internal.active_player)
 
 
     @staticmethod
@@ -61,6 +37,88 @@ class internal:
         # initialize the game
         internal.current_game.initialize_game()
         ServerProtocol.message_all_players(Display.display_board(internal.current_game.board))
+
+    @staticmethod
+    def join_game(actions, transport):
+        data = actions.get('join_game').split(',')
+        player_name = data[0]
+        character = data[1]
+        if internal.num_players == 0:
+            expected_players = data[2]
+        internal.current_players[internal.num_players] = {"name": player_name,
+                                                          "character": character,
+                                                          "transport": transport}
+
+        if internal.current_game is None:
+            internal.current_game = Game()
+            internal.expected_players = int(expected_players)
+
+        # add player to game
+        internal.current_game.add_player(player_name, character)
+        internal.num_players += 1
+        internal.remaining_characters.remove(character)
+
+        players_left_to_join = str(internal.expected_players - internal.num_players)
+
+        if internal.num_players == internal.expected_players:
+            ServerProtocol.message_all_players(
+                '{0} just joined the game as {1}. Everyone has joined! Lets begin.').format(player_name, character)
+            internal.begin_game()
+        else:
+            ServerProtocol.message_all_players(
+                '{0} just joined the game as {1}. Waiting for {2} more player(s) to join!'.format(
+                    player_name, character, players_left_to_join))
+
+    @staticmethod
+    def terminate_game():
+        ServerProtocol.message_all_players('Please play again!')
+        ServerProtocol.close_connections()
+
+        internal.current_players = {}
+        internal.current_game = None
+        internal.num_players = 0
+        internal.expected_players = 0
+
+    @staticmethod
+    def begin_turn(player_num):
+        # get available moves
+        # get adjacent spaces
+        # get any secret passageways
+        # make accusation
+        # make suggestion
+
+        potential_moves = {}
+        count = 1
+        suggestion_possible = False
+
+        player_character = internal.current_players.get(player_num)
+        location = internal.current_game.board.locate_character(player_character)
+
+        adjacent_spaces = location.adjacent_spaces
+        if isinstance(location, Room):
+            secret_passage = location.secret_passage
+            suggestion_possible = True
+        else:
+            secret_passage = None
+
+        for space in adjacent_spaces:
+            potential_moves[count] = space.space_id
+            count += 1
+
+        if secret_passage is not None:
+            potential_moves[count] = secret_passage
+            count += 1
+
+        if suggestion_possible:
+            potential_moves[count] = "Make a suggestion."
+            count += 1
+
+        potential_moves[count] = "Make an accusation"
+
+        ServerProtocol.message_current_player("\nIt's your turn!" +
+                                              "\nPlease enter the number associated with your chosen move: " +
+                                              "\n" + potential_moves + "\n")
+
 
 class ServerProtocol(asyncio.Protocol):
 
@@ -74,16 +132,11 @@ class ServerProtocol(asyncio.Protocol):
         message = data.decode()
         print('Data received: {!r}'.format(message))
 
-        internal.handle_input(message, self.transport, self.peername)
-
-        if 'terminate_game' in message:
-            print('Close the client socket')
-            self.transport.close()
+        internal.handle_input(message, self.transport)
 
     @staticmethod
     def message_all_players(message):
         for k in internal.current_players:
-            print(internal.current_players.get(k))
             record = internal.current_players.get(k)
             curr_transport = record.get("transport")
             curr_transport.write(message.encode())
@@ -92,6 +145,13 @@ class ServerProtocol(asyncio.Protocol):
     @staticmethod
     def message_current_player(curr_transport, message):
         curr_transport.write(message.encode())
+
+    @staticmethod
+    def close_connections():
+        for k in internal.current_players:
+            record = internal.current_players.get(k)
+            curr_transport = record.get("transport")
+            curr_transport.close()
 
 
 async def main():

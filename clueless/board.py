@@ -89,6 +89,7 @@ HALLWAYS = [
 
 class GameBoard:
     spaces = {}
+    character_positions = {}
 
     def __init__(self):
         self.spaces = {
@@ -223,8 +224,16 @@ class GameBoard:
             loc = character_starting_location.get(character)
             spc = self.spaces.get(loc)
             spc.add_suspect(character)
+
+            # keep track of character locations
+            self.character_positions[character] = spc
             return spc
 
+    def locate_character(self, character):
+        if character not in self.character_positions:
+            raise ValueError("Invalid character name.")
+        else:
+            return self.character_positions.get(character)
 
 class Space:
     space_id = None

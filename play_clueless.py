@@ -39,13 +39,12 @@ class ClientProtocol(asyncio.Protocol):
 
     def connection_made(self, transport):
         transport.write(self.message.encode())
-        print('Data sent: {!r}'.format(self.message))
         self.transport = transport
 
     def data_received(self, data):
         message = data.decode()
         value = handle_message(message)
-        if value != None:
+        if value is not None:
             self.transport.write(value.encode())
 
     def connection_lost(self, exc):

@@ -59,3 +59,10 @@ class Game:
 
     def get_cards(self):
         return self.deck
+
+    def get_player_by_character(self, character):
+        for player in self.players:
+            if player.selected_character == character:
+                return player
+
+        raise ValueError("Invalid character name.")
