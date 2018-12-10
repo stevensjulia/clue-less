@@ -122,4 +122,4 @@ class Display:
                     kitchen_w=kitchen_w,
                     )
 
-        print(board)
+        return board
