@@ -92,7 +92,7 @@ class internal:
         count = 1
         suggestion_possible = False
 
-        player_character = internal.current_players.get(player_num)
+        player_character = internal.current_players.get(player_num).get("character")
         location = internal.current_game.board.locate_character(player_character)
 
         adjacent_spaces = location.adjacent_spaces
