@@ -273,12 +273,14 @@ class Space:
             raise Exception("This room is already occupied!")
         else:
             self.suspects = character
+            self.occupied = True
 
     def remove_suspect(self, character):
         if self.suspects is not character:
             raise Exception("Cannot remove suspect from room as suspect is not currently occupying this room.")
         else:
             self.suspects = None
+            self.occupied = False
 
 
 class Room(Space):
@@ -299,9 +301,12 @@ class Room(Space):
 
     def add_suspect(self, character):
         self.suspects.append(character)
+        self.occupied = True
 
     def remove_suspect(self, character):
         if character not in self.suspects:
             raise Exception("Cannot remove suspect from room as suspect is not currently occupying this room.")
         else:
-            self.suspects.pop(character)
+            self.suspects.remove(character)
+            if len(self.suspects) == 0:
+                self.occupied = False
