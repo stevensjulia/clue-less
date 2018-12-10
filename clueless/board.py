@@ -213,7 +213,7 @@ class GameBoard:
             if characters is None:
                 return ""
             else:
-                return characters
+                return str(characters)
 
     def get_weapon_in_space(self, space_id):
         if space_id not in self.spaces:

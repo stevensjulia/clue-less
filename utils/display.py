@@ -62,7 +62,6 @@ class Display:
         conservatory_w = current_board.get_weapon_in_space(CONSERVATORY)
         ballroom_w = current_board.get_weapon_in_space(BALLROOM)
         kitchen_w = current_board.get_weapon_in_space(KITCHEN)
-        print(kitchen_w)
 
         board = "\n" \
                 "--------------------------------------------------------------------------------\n" \
@@ -89,7 +88,7 @@ class Display:
                 "| Conservatory |               |   Ballroom    |               |    Kitchen    |\n" \
                 "|              |               |               |               |               |\n" \
                 "|{conservatory:^14}|{eleven:^15}|{ballroom:^15}|{twelve:^15}|{kitchen:^15}|\n" \
-                "|{conservatory_w:^14}|               |{ballroom_w:^15}|               |{kitchen_w}|\n" \
+                "|{conservatory_w:^14}|               |{ballroom_w:^15}|               |{kitchen_w:^15}|\n" \
                 "|______________|_______________|_______________|_______________|_______________|\n".format(
                     study=study,
                     hall=hall,
