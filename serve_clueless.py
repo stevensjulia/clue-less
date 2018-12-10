@@ -2,6 +2,7 @@ from clueless.game import Game
 from utils.display import Display
 import asyncio
 import json
+import sys
 
 
 class internal:
@@ -82,9 +83,11 @@ class ServerProtocol(asyncio.Protocol):
     @staticmethod
     def message_all_players(message):
         for k in internal.current_players:
+            print(internal.current_players.get(k))
             record = internal.current_players.get(k)
             curr_transport = record.get("transport")
             curr_transport.write(message.encode())
+        sys.stdout.flush()
 
     @staticmethod
     def message_current_player(curr_transport, message):
