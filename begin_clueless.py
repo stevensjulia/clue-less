@@ -1,6 +1,7 @@
 from clueless.game import Game
 from utils.display import Display
 import asyncio
+import json
 import socket
 
 
@@ -24,7 +25,9 @@ def begin_game():
 
     print("\nThanks for starting a game!\n")
 
-    return vars
+    sys_call = {"join_game": vars}
+
+    return json.dumps(sys_call)
 
     #Display.display_board(current_game.board)
 
