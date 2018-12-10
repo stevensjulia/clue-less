@@ -37,7 +37,7 @@ class internal:
 
             if internal.num_players == internal.expected_players:
                 ServerProtocol.message_all_players('Everyone has joined! Lets begin.')
-                ServerProtocol.message_all_players(Display.display_board(internal.current_game.board))
+                internal.begin_game()
             else:
                 ServerProtocol.message_all_players(
                     '{0} just joined the game as {1}. Waiting for {2} more player(s) to join!'.format(
@@ -54,6 +54,12 @@ class internal:
             ServerProtocol.message_current_player(
                 transport, "Please choose from the remaining characters: " + str(internal.remaining_characters))
 
+
+    @staticmethod
+    def begin_game():
+        # initialize the game
+        internal.current_game.initialize_game()
+        ServerProtocol.message_all_players(Display.display_board(internal.current_game.board))
 
 class ServerProtocol(asyncio.Protocol):
 
