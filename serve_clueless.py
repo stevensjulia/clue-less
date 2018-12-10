@@ -92,7 +92,9 @@ class internal:
         count = 1
         suggestion_possible = False
 
-        player_character = internal.current_players.get(player_num).get("character")
+        player = internal.current_players.get(player_num)
+        player_character = player.get("character")
+        player_transport = player.get("transport")
         location = internal.current_game.board.locate_character(player_character)
 
         adjacent_spaces = location.adjacent_spaces
@@ -116,9 +118,10 @@ class internal:
 
         potential_moves[count] = "Make an accusation"
 
-        ServerProtocol.message_current_player("\nIt's your turn!" +
+        ServerProtocol.message_current_player(player_transport,
+                                              "\nIt's your turn!" +
                                               "\nPlease enter the number associated with your chosen move: " +
-                                              "\n" + potential_moves + "\n")
+                                              "\n" + json.dumps(potential_moves) + "\n")
 
 
 class ServerProtocol(asyncio.Protocol):
