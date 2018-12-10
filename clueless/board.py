@@ -230,10 +230,10 @@ class GameBoard:
             return spc
 
     def locate_character(self, character):
-        if character not in self.character_positions:
-            raise ValueError("Invalid character name.")
-        else:
+        if character in self.character_positions:
             return self.character_positions.get(character)
+        else:
+            raise ValueError("Invalid character name.")
 
 class Space:
     space_id = None
