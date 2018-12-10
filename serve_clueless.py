@@ -159,6 +159,7 @@ class internal:
                                                space_id + ".\n")
 
             ServerProtocol.message_all_players(Display.display_board(internal.current_game.board))
+            sys.stdout.flush()
 
             if internal.active_player < internal.expected_player:
                 internal.active_player += 1

@@ -62,6 +62,7 @@ class Display:
         conservatory_w = current_board.get_weapon_in_space(CONSERVATORY)
         ballroom_w = current_board.get_weapon_in_space(BALLROOM)
         kitchen_w = current_board.get_weapon_in_space(KITCHEN)
+        print(kitchen_w)
 
         board = "\n" \
                 "--------------------------------------------------------------------------------\n" \
