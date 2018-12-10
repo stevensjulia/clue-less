@@ -62,7 +62,7 @@ class internal:
 
         if internal.num_players == internal.expected_players:
             ServerProtocol.message_all_players(
-                '{0} just joined the game as {1}. Everyone has joined! Lets begin.').format(player_name, character)
+                '{0} just joined the game as {1}. Everyone has joined! Lets begin.'.format(player_name, character))
             internal.begin_game()
         else:
             ServerProtocol.message_all_players(
