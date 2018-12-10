@@ -120,7 +120,8 @@ class Display:
                     dining_w=dining_w,
                     conservatory_w=conservatory_w,
                     ballroom_w=ballroom_w,
-                    kitchen_w=kitchen_w,
+                    #kitchen_w=kitchen_w,
+                    kitchen = "kitchen_w"
                     )
 
         return board
