@@ -24,8 +24,11 @@ def join_game(message):
 
 
 def handle_message(message):
-    if message.__contains__('Please choose from the remaining characters:'):
-        return join_game(message)
+    if 'Please choose from the remaining characters:' in message:
+        val = join_game(message)
+        return val
+    else:
+        print(message)
 
 
 class ClientProtocol(asyncio.Protocol):
@@ -41,7 +44,9 @@ class ClientProtocol(asyncio.Protocol):
 
     def data_received(self, data):
         message = data.decode()
-        self.transport.write(handle_message(message))
+        value = handle_message(message)
+        if value != None:
+            self.transport.write(value.encode())
 
     def connection_lost(self, exc):
         print('The server closed the connection')
