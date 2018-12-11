@@ -1,4 +1,3 @@
-
 # Game constants
 
 SUSPECT = 'Suspect'
@@ -58,18 +57,18 @@ Rooms = [
     STUDY
 ]
 
-STUDY_LIBRARY = 'three'
-STUDY_HALL = 'one'
-HALL_BILLIARD = 'four'
-HALL_LOUNGE = 'two'
-LOUNGE_DINING = 'five'
-LIBRARY_CONSERVATORY = 'eight'
-LIBRARY_BILLIARD = 'six'
-BILLIARD_BALLROOM = 'nine'
-BILLIARD_DINING = 'seven'
-DINING_KITCHEN = 'ten'
-CONSERVATORY_BALLROOM = 'eleven'
-BALLROOM_KITCHEN = 'twelve'
+STUDY_LIBRARY = 'study to library'
+STUDY_HALL = 'study to hall'
+HALL_BILLIARD = 'hall to billiard'
+HALL_LOUNGE = 'hall to lounge'
+LOUNGE_DINING = 'lounge to dining'
+LIBRARY_CONSERVATORY = 'library to conservatory'
+LIBRARY_BILLIARD = 'library to billiard'
+BILLIARD_BALLROOM = 'billiard to ballroom'
+BILLIARD_DINING = 'billiard to dining'
+DINING_KITCHEN = 'dining to kitchen'
+CONSERVATORY_BALLROOM = 'conservatory to ballroom'
+BALLROOM_KITCHEN = 'ballroom to kitchen'
 
 HALLWAYS = [
     STUDY_LIBRARY,
@@ -212,6 +211,8 @@ class GameBoard:
             characters = self.spaces.get(space_id).suspects
             if characters is None:
                 return ""
+            elif isinstance(characters, list):
+                return ",".join(characters)
             else:
                 return characters
 
@@ -273,12 +274,14 @@ class Space:
             raise Exception("This room is already occupied!")
         else:
             self.suspects = character
+            self.occupied = True
 
     def remove_suspect(self, character):
         if self.suspects is not character:
             raise Exception("Cannot remove suspect from room as suspect is not currently occupying this room.")
         else:
             self.suspects = None
+            self.occupied = False
 
 
 class Room(Space):
@@ -290,6 +293,7 @@ class Room(Space):
         Space.__init__(self, space_id, adjacent_spaces)
         self.secret_passage = secret_passage
         self.weapons = weapons
+        self.suspects = []
 
     def set_occupied(self):
         self.occupied = True
@@ -299,9 +303,12 @@ class Room(Space):
 
     def add_suspect(self, character):
         self.suspects.append(character)
+        self.occupied = True
 
     def remove_suspect(self, character):
         if character not in self.suspects:
             raise Exception("Cannot remove suspect from room as suspect is not currently occupying this room.")
         else:
-            self.suspects.pop(character)
+            self.suspects.remove(character)
+            if len(self.suspects) == 0:
+                self.occupied = False

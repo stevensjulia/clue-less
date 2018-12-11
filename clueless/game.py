@@ -2,6 +2,7 @@ from .player import Player
 from .deck import Deck
 from .casefile import CaseFile
 from .board import GameBoard
+from .board import Room
 
 
 class Game:
@@ -66,3 +67,16 @@ class Game:
                 return player
 
         raise ValueError("Invalid character name.")
+
+    def move_player_to_space_by_id(self, space_id, character, old_space):
+        # moves player to space indicated by ID and returns the type of the space
+        space = self.get_space_by_id(space_id)
+
+        space.add_suspect(character)
+        old_space.remove_suspect(character)
+        self.board.character_positions[character] = space
+
+        if isinstance(space, Room):
+            return "Room"
+        else:
+            return "Space"

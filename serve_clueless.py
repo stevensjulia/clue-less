@@ -13,6 +13,13 @@ class internal:
     expected_players = 0
     remaining_characters = ["Miss Scarlet", "Mrs White", "Mrs Peacock", "Col Mustard", "Prof Plum", "Mr Green"]
     active_player = 1
+    disprover = 0
+    sugg_char = None
+    sugg_weapon = None
+    sugg_room = None
+
+    current_turn_options = {}
+
 
     @staticmethod
     def handle_input(message, transport):
@@ -31,6 +38,18 @@ class internal:
         if 'begin_turn' in actions:
             internal.begin_turn(internal.active_player)
 
+        if 'turn_selection' in actions:
+            internal.take_turn(actions)
+
+        if 'make_suggestion' in actions:
+            internal.handle_suggestion(actions)
+
+        if 'make_accusation' in actions:
+            internal.handle_accusation(actions)
+
+        if 'check_suggestion' in actions:
+            internal.handle_suggestion_input(actions)
+
 
     @staticmethod
     def begin_game():
@@ -44,14 +63,13 @@ class internal:
         data = actions.get('join_game').split(',')
         player_name = data[0]
         character = data[1]
-        if internal.num_players == 0:
-            expected_players = data[2]
-        internal.current_players[internal.num_players] = {"name": player_name,
-                                                          "character": character,
-                                                          "transport": transport}
+        internal.current_players[internal.num_players + 1] = {"name": player_name,
+                                                              "character": character,
+                                                              "transport": transport}
 
         if internal.current_game is None:
             internal.current_game = Game()
+            expected_players = data[2]
             internal.expected_players = int(expected_players)
 
         # add player to game
@@ -99,18 +117,15 @@ class internal:
 
         adjacent_spaces = location.adjacent_spaces
         if isinstance(location, Room):
-            secret_passage = location.secret_passage
             suggestion_possible = True
-        else:
-            secret_passage = None
 
         for space in adjacent_spaces:
-            potential_moves[count] = space.space_id
-            count += 1
-
-        if secret_passage is not None:
-            potential_moves[count] = secret_passage
-            count += 1
+            if isinstance(space, Room):
+                potential_moves[count] = space.space_id
+                count += 1
+            elif not space.occupied:
+                potential_moves[count] = space.space_id
+                count += 1
 
         if suggestion_possible:
             potential_moves[count] = "Make a suggestion."
@@ -118,10 +133,189 @@ class internal:
 
         potential_moves[count] = "Make an accusation"
 
+        internal.current_turn_options = potential_moves
+
         ServerProtocol.message_current_player(player_transport,
                                               "\nIt's your turn!" +
                                               "\nPlease enter the number associated with your chosen move: " +
                                               "\n" + json.dumps(potential_moves) + "\n")
+
+    @staticmethod
+    def take_turn(actions):
+        player = internal.current_players.get(internal.active_player)
+        player_name = player.get("name")
+        player_character = player.get("character")
+        location = internal.current_game.board.locate_character(player_character)
+
+        data = actions.get('turn_selection')
+        turn = internal.current_turn_options.get(int(data))
+
+        if 'suggestion' in turn:
+            internal.make_suggestion(player)
+        elif 'accusation' in turn:
+            internal.make_accusation(player)
+        else:
+            space_id = turn
+            space_type = internal.current_game.move_player_to_space_by_id(space_id, player_character, location)
+
+            ServerProtocol.message_all_players("\n" + player_name + " moved " + player_character + " to " +
+                                               space_id + ".\n")
+
+            ServerProtocol.message_all_players(Display.display_board(internal.current_game.board))
+
+            if space_type is 'Room':
+                internal.make_suggestion(player, space_id)
+            else:
+                internal.finish_turn()
+
+    @staticmethod
+    def make_suggestion(player, space_id):
+        player_transport = player.get("transport")
+
+        ServerProtocol.message_current_player(player_transport, "\nPlease make a suggestion in the :" + space_id)
+
+    @staticmethod
+    def handle_suggestion(suggestion):
+        player = internal.current_players.get(internal.active_player)
+        player_name = player.get("name")
+
+        pieces = suggestion.get('make_suggestion').split(',')
+        internal.sugg_char = pieces[0]
+        internal.sugg_weapon = pieces[1]
+        internal.sugg_room = pieces[2]
+
+        suggestion_string = "\n" + player_name + " suggested: " + internal.sugg_char + " in the " + internal.sugg_room + \
+                            " with the " + internal.sugg_weapon + ".\n"
+
+        ServerProtocol.message_all_players(suggestion_string)
+
+        internal.check_suggestions(internal.active_player, internal.sugg_char, internal.sugg_weapon, internal.sugg_room)
+
+    @staticmethod
+    def check_suggestions(player_num, char, weapon, room):
+        curr_player = player_num
+        if player_num < internal.expected_players:
+            curr_player += 1
+        else:
+            curr_player = 1
+
+        internal.prompt_player(curr_player, char, weapon, room)
+
+
+    @staticmethod
+    def prompt_player(player_num, char, weapon, room):
+        player = internal.current_players.get(player_num)
+        player_transport = player.get("transport")
+
+        internal.disprover = player_num
+
+        ServerProtocol.message_current_player(player_transport,
+                                              "Do you have any information to share about the suggestion?" + char +
+                                              "?" + weapon + "?" + room)
+        return True
+
+    @staticmethod
+    def handle_suggestion_input(actions):
+        pieces = actions.get('check_suggestion').split(',')
+        char = pieces[0]
+        weapon = pieces[1]
+        room = pieces[2]
+
+        if char is '' and weapon is '' and room is '':
+            response = None
+        elif char is not '':
+            response = char
+        elif weapon is not '':
+            response = weapon
+        elif room is not '':
+            response = room
+
+        dis = internal.current_players.get(internal.disprover)
+        active = internal.current_players.get(internal.active_player)
+        active_name = active.get("name")
+        dis_name = dis.get("name")
+
+        if response is not None:
+            ServerProtocol.message_current_player(active.get("transport"), "\n" + dis_name +
+                                                  " can disprove: " + response)
+            ServerProtocol.message_all_players("\n" + dis_name + " was able to disprove part of " +
+                                               active_name + "'s suggestion.\n")
+            internal.finish_turn()
+        else:
+            ServerProtocol.message_all_players("\n" + dis_name + " was not able to disprove any of " +
+                                               active_name + "'s suggestion.\n")
+            if internal.disprover < internal.expected_players:
+                internal.disprover += 1
+            else:
+                internal.disprover = 1
+
+            if internal.disprover != internal.active_player:
+                internal.prompt_player(internal.disprover, internal.sugg_char, internal.sugg_weapon, internal.sugg_room)
+            else:
+                internal.finish_turn()
+
+    @staticmethod
+    def make_accusation(player):
+        player_transport = player.get("transport")
+
+        ServerProtocol.message_current_player(player_transport, "\nPlease make an accusation.")
+
+    @staticmethod
+    def handle_accusation(suggestion):
+        player = internal.current_players.get(internal.active_player)
+        player_name = player.get("name")
+
+        pieces = suggestion.get('make_accusation').split(',')
+        char = pieces[0]
+        weapon = pieces[1]
+        room = pieces[2]
+
+        result = internal.check_accusation(char, weapon, room)
+
+        if result is True:
+            ServerProtocol.message_all_players("\n" + player_name + " correctly accused " + char + " in the " + room +
+                                               " with the " + weapon + ".\n")
+            internal.terminate_game()
+        else:
+            ServerProtocol.message_all_players("\n" + player_name + " made an invalid accusation. They are no longer "
+                                                                    "active in the game.\n")
+            internal.remove_player_from_game(internal.active_player)
+
+            if len(internal.current_players.keys()) == 1:
+                internal.terminate_game()
+
+        internal.finish_turn()
+
+    @staticmethod
+    def check_accusation(char, weapon, room):
+        casefile = internal.current_game.case_file
+        return casefile.check_solution(char, weapon, room)
+
+    @staticmethod
+    def finish_turn():
+        sys.stdout.flush()
+
+        if internal.active_player < internal.expected_players:
+            internal.active_player += 1
+        else:
+            internal.active_player = 1
+
+        if internal.current_game is not None:
+            internal.begin_turn(internal.active_player)
+
+    @staticmethod
+    def go_to_next_valid_player():
+        player_valid = False
+        while not player_valid:
+            internal.active_player += 1
+            if internal.active_player not in internal.current_players:
+                continue
+            else:
+                player_valid = True
+
+    @staticmethod
+    def remove_player_from_game(player_num):
+        del internal.current_players[player_num]
 
 
 class ServerProtocol(asyncio.Protocol):
