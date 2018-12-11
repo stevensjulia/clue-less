@@ -157,7 +157,7 @@ class internal:
             ServerProtocol.message_all_players(Display.display_board(internal.current_game.board))
 
             if space_type is 'Room':
-                internal.make_suggestion(player)
+                internal.make_suggestion(player, space_id)
             else:
                 internal.finish_turn()
 
@@ -168,14 +168,14 @@ class internal:
         ServerProtocol.message_current_player(player_transport, "\nPlease make a suggestion.")
 
     @staticmethod
-    def handle_suggestion(suggestion):
+    def handle_suggestion(suggestion, room):
         player = internal.current_players.get(internal.active_player)
         player_name = player.get("name")
 
         pieces = suggestion.get('make_suggestion').split(',')
         char = pieces[0]
         weapon = pieces[1]
-        room = pieces[2]
+        #room = pieces[2]
 
         suggestion_string = "\n" + player_name + " suggested: " + char + " in the " + room + " with the " + \
                             weapon + ".\n"

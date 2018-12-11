@@ -50,10 +50,11 @@ def make_suggestion():
                          "Miss Scarlet, Mrs White, Mrs Peacock, Col Mustard, Prof Plum, Mr Green \n")
             weapon = input("\nPlease choose a weapon from the following: "
                            "\nRope, Lead Pipe, Knife, Wrench, Candlestick, Revolver \n")
-            room = input("\nPlease choose a room from the following: \n"
-                         "Study, Hall, Lounge, Library, Billiard Room, Dining Room, Conservatory, Ballroom, Kitchen \n")
+            # room = input("\nPlease choose a room from the following: Study, Hall, Lounge, Library, Billiard Room,"
+            #             "Dining Room, Conservatory, Ballroom, Kitchen \n")
 
-            vars = char + "," + weapon + "," + room
+            # vars = char + "," + weapon + "," + room
+            vars = char + "," + weapon
 
             break
 
@@ -72,7 +73,7 @@ def make_suggestion():
 def make_accusation():
     while True:
         try:
-            char = input("\nYou've entered a new room! You may now make a suggestion. \n"
+            char = input("\nYou may now make your accusation. Good luck! \n"
                          "Please choose a character from the following: "
                          "Miss Scarlet, Mrs White, Mrs Peacock, Col Mustard, Prof Plum, Mr Green \n")
             weapon = input("\nPlease choose a weapon from the following: "
