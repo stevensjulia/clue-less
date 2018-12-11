@@ -110,10 +110,7 @@ class internal:
 
         adjacent_spaces = location.adjacent_spaces
         if isinstance(location, Room):
-            secret_passage = location.secret_passage
             suggestion_possible = True
-        else:
-            secret_passage = None
 
         for space in adjacent_spaces:
             if isinstance(space, Room):
@@ -122,10 +119,6 @@ class internal:
             elif not space.occupied:
                 potential_moves[count] = space.space_id
                 count += 1
-
-        if secret_passage is not None:
-            potential_moves[count] = secret_passage
-            count += 1
 
         if suggestion_possible:
             potential_moves[count] = "Make a suggestion."
@@ -153,7 +146,7 @@ class internal:
         if 'suggestion' in turn:
             internal.make_suggestion(player)
         elif 'accusation' in turn:
-            internal.make_accusation()
+            internal.make_accusation(player)
         else:
             space_id = turn
             space_type = internal.current_game.move_player_to_space_by_id(space_id, player_character, location)

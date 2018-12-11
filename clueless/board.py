@@ -212,8 +212,10 @@ class GameBoard:
             characters = self.spaces.get(space_id).suspects
             if characters is None:
                 return ""
+            elif isinstance(list, characters):
+                return ",".join(characters)
             else:
-                return str(characters)
+                return characters
 
     def get_weapon_in_space(self, space_id):
         if space_id not in self.spaces:
