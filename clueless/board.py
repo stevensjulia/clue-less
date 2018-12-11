@@ -58,18 +58,18 @@ Rooms = [
     STUDY
 ]
 
-STUDY_LIBRARY = 'three'
-STUDY_HALL = 'one'
-HALL_BILLIARD = 'four'
-HALL_LOUNGE = 'two'
-LOUNGE_DINING = 'five'
-LIBRARY_CONSERVATORY = 'eight'
-LIBRARY_BILLIARD = 'six'
-BILLIARD_BALLROOM = 'nine'
-BILLIARD_DINING = 'seven'
-DINING_KITCHEN = 'ten'
-CONSERVATORY_BALLROOM = 'eleven'
-BALLROOM_KITCHEN = 'twelve'
+STUDY_LIBRARY = 'study to library'
+STUDY_HALL = 'study to hall'
+HALL_BILLIARD = 'hall to billiard'
+HALL_LOUNGE = 'hall to lounge'
+LOUNGE_DINING = 'lounge to dining'
+LIBRARY_CONSERVATORY = 'library to conservatory'
+LIBRARY_BILLIARD = 'library to billiard'
+BILLIARD_BALLROOM = 'billiard to ballroom'
+BILLIARD_DINING = 'billiard to dining'
+DINING_KITCHEN = 'dining to kitchen'
+CONSERVATORY_BALLROOM = 'conservatory to ballroom'
+BALLROOM_KITCHEN = 'ballroom to kitchen'
 
 HALLWAYS = [
     STUDY_LIBRARY,
