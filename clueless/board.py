@@ -211,7 +211,7 @@ class GameBoard:
             characters = self.spaces.get(space_id).suspects
             if characters is None:
                 return ""
-            elif not isinstance(characters, list):
+            elif isinstance(characters, list):
                 return ",".join(characters)
             else:
                 return characters
