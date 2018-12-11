@@ -208,7 +208,7 @@ class internal:
         player_transport = player.get("transport")
 
         ServerProtocol.message_current_player(player_transport,
-                                              "\nDo you have any information to share about the suggestion?" + char +
+                                              "Do you have any information to share about the suggestion?" + char +
                                               "?" + weapon + "?" + room)
         return True
 
