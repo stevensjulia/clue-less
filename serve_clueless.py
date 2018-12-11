@@ -207,6 +207,8 @@ class internal:
         player = internal.current_players.get(player_num)
         player_transport = player.get("transport")
 
+        internal.disprover = player_num
+
         ServerProtocol.message_current_player(player_transport,
                                               "Do you have any information to share about the suggestion?" + char +
                                               "?" + weapon + "?" + room)
@@ -230,15 +232,17 @@ class internal:
 
         dis = internal.current_players.get(internal.disprover)
         active = internal.current_players.get(internal.active_player)
+        active_name = active.get("name")
+        dis_name = dis.get("name")
 
         if response is not None:
-            ServerProtocol.message_current_player(active.get("transport"), "\n" + dis.get("name") +
+            ServerProtocol.message_current_player(active.get("transport"), "\n" + dis_name +
                                                   " can disprove: " + response)
-            ServerProtocol.message_all_players("\n" + dis.get("name") + " was able to disprove part of " +
-                                               active.get("name") + "'s suggestion.\n")
+            ServerProtocol.message_all_players("\n" + dis_name + " was able to disprove part of " +
+                                               active_name + "'s suggestion.\n")
         else:
-            ServerProtocol.message_all_players("\n" + dis.get("name") + " was not able to disprove any of " +
-                                               active.get("name") + "'s suggestion.\n")
+            ServerProtocol.message_all_players("\n" + dis_name + " was not able to disprove any of " +
+                                               active_name + "'s suggestion.\n")
             if internal.disprover < internal.expected_players:
                 internal.disprover += 1
             else:
