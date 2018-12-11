@@ -240,6 +240,7 @@ class internal:
                                                   " can disprove: " + response)
             ServerProtocol.message_all_players("\n" + dis_name + " was able to disprove part of " +
                                                active_name + "'s suggestion.\n")
+            internal.finish_turn()
         else:
             ServerProtocol.message_all_players("\n" + dis_name + " was not able to disprove any of " +
                                                active_name + "'s suggestion.\n")
