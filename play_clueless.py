@@ -89,6 +89,35 @@ def make_accusation():
     return json.dumps(sys_call)
 
 
+def check_suggestion(c, w, r):
+    while True:
+        try:
+            char = input("\nDo you have any evidence to disprove the current suggestion of " + c + " with the " + w +
+                         " in the " + r + "\n"
+                         "If you are able, please provide a character you know to be innocent: "
+                         "Miss Scarlet, Mrs White, Mrs Peacock, Col Mustard, Prof Plum, Mr Green \n"
+                         "If you have nothing to provide, please select enter. \n")
+            weapon = input("\nIf you are able, please provide a weapon you know to be innocent: "
+                           "\nRope, Lead Pipe, Knife, Wrench, Candlestick, Revolver \n"
+                           "If you have nothing to provide, please select enter. \n")
+            room = input("\nIf you are able, please provide a room you know to be innocent: \n"
+                         "Study, Hall, Lounge, Library, Billiard Room, Dining Room, Conservatory, Ballroom, Kitchen \n"
+                         "If you have nothing to provide, please select enter. \n")
+
+            vars = char + "," + weapon + "," + room
+
+            break
+
+        except ValueError:
+            print("\nSorry, I didn't understand that.")
+            # better try again... Return to the start of the loop
+            continue
+
+    sys_call = {"check_suggestion": vars}
+
+    return json.dumps(sys_call)
+
+
 def handle_message(message):
     if 'Please choose from the remaining characters:' in message:
         val = join_game(message)
@@ -99,6 +128,12 @@ def handle_message(message):
         val = make_suggestion(pieces[1])
     elif 'Please make an accusation' in message:
         val = make_accusation()
+    elif 'Do you have any information to share about the suggestion?' in message:
+        pieces = message.split('?')
+        char = pieces[1]
+        weapon = pieces[2]
+        room = pieces[3]
+        val = check_suggestion(char,weapon,room)
     else:
         print(message)
         val = None

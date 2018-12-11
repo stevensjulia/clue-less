@@ -13,6 +13,10 @@ class internal:
     expected_players = 0
     remaining_characters = ["Miss Scarlet", "Mrs White", "Mrs Peacock", "Col Mustard", "Prof Plum", "Mr Green"]
     active_player = 1
+    disprover = 0
+    sugg_char = None
+    sugg_weapon = None
+    sugg_room = None
 
     current_turn_options = {}
 
@@ -42,6 +46,9 @@ class internal:
 
         if 'make_accusation' in actions:
             internal.handle_accusation(actions)
+
+        if 'check_suggestion' in actions:
+            internal.handle_suggestion_input(actions)
 
 
     @staticmethod
@@ -173,16 +180,74 @@ class internal:
         player_name = player.get("name")
 
         pieces = suggestion.get('make_suggestion').split(',')
+        internal.sugg_char = pieces[0]
+        internal.sugg_weapon = pieces[1]
+        internal.sugg_room = pieces[2]
+
+        suggestion_string = "\n" + player_name + " suggested: " + internal.sugg_char + " in the " + internal.sugg_room + \
+                            " with the " + internal.sugg_weapon + ".\n"
+
+        ServerProtocol.message_all_players(suggestion_string)
+
+        internal.check_suggestions(internal.active_player, internal.sugg_char, internal.sugg_weapon, internal.sugg_room)
+
+        internal.finish_turn()
+
+    @staticmethod
+    def check_suggestions(player_num, char, weapon, room):
+        curr_player = player_num
+        if player_num < internal.expected_players:
+            curr_player += 1
+        else:
+            curr_player = 1
+
+        internal.prompt_player(curr_player, char, weapon, room)
+
+
+    @staticmethod
+    def prompt_player(player_num, char, weapon, room):
+        player = internal.current_players.get(player_num)
+        player_transport = player.get("transport")
+
+        ServerProtocol.message_current_player(player_transport,
+                                              "\nDo you have any information to share about the suggestion?" + char +
+                                              "?" + weapon + "?" + room)
+        return True
+
+    @staticmethod
+    def handle_suggestion_input(actions):
+        pieces = actions.get('check_suggestion').split(',')
         char = pieces[0]
         weapon = pieces[1]
         room = pieces[2]
 
-        suggestion_string = "\n" + player_name + " suggested: " + char + " in the " + room + " with the " + \
-                            weapon + ".\n"
+        if char is '' and weapon is '' and room is '':
+            response = None
+        elif char is not '':
+            response = char
+        elif weapon is not '':
+            response = weapon
+        elif room is not '':
+            response = room
 
-        ServerProtocol.message_all_players(suggestion_string)
+        dis = internal.current_players.get(internal.disprover)
+        active = internal.current_players.get(internal.active_player)
 
-        internal.finish_turn()
+        if response is not None:
+            ServerProtocol.message_current_player(dis.get("transport"), "\n" + dis.get("name") +
+                                                  " can disprove:" + response)
+            ServerProtocol.message_all_players("\n" + dis.get("name") + " was able to disprove part of " +
+                                               active.get("name") + "'s suggestion.\n")
+        else:
+            if internal.disprover < internal.expected_players:
+                internal.disprover += 1
+            else:
+                internal.disprover = 1
+
+            if internal.disprover != internal.active_player:
+                internal.prompt_player(internal.disprover, internal.sugg_char, internal.sugg_weapon, internal.sugg_room)
+            else:
+                internal.finish_turn()
 
     @staticmethod
     def make_accusation(player):
