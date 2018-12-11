@@ -69,7 +69,13 @@ class Game:
         raise ValueError("Invalid character name.")
 
     def move_player_to_space_by_id(self, space_id, character, old_space):
+        # moves player to space indicated by ID and returns the type of the space
         space = self.get_space_by_id(space_id)
         space.add_suspect(character)
 
         old_space.remove_suspect(character)
+
+        if isinstance(space, Room):
+            return "Room"
+        else:
+            return "Space"

@@ -37,6 +37,9 @@ class internal:
         if 'turn_selection' in actions:
             internal.take_turn(actions)
 
+        if 'make_suggestion' in actions:
+            internal.handle_suggestion(actions)
+
 
     @staticmethod
     def begin_game():
@@ -53,8 +56,8 @@ class internal:
         if internal.num_players == 0:
             expected_players = data[2]
         internal.current_players[internal.num_players + 1] = {"name": player_name,
-                                                          "character": character,
-                                                          "transport": transport}
+                                                              "character": character,
+                                                              "transport": transport}
 
         if internal.current_game is None:
             internal.current_game = Game()
@@ -135,47 +138,73 @@ class internal:
                                               "\nPlease enter the number associated with your chosen move: " +
                                               "\n" + json.dumps(potential_moves) + "\n")
 
-
     @staticmethod
     def take_turn(actions):
         player = internal.current_players.get(internal.active_player)
         player_name = player.get("name")
         player_character = player.get("character")
+        player_transport = player.get("transport")
         location = internal.current_game.board.locate_character(player_character)
 
         data = actions.get('turn_selection')
         turn = internal.current_turn_options.get(int(data))
 
         if 'suggestion' in turn:
-            internal.make_suggestion()
+            internal.make_suggestion(player)
         elif 'accusation' in turn:
             internal.make_accusation()
         else:
             space_id = turn
-            internal.current_game.move_player_to_space_by_id(space_id, player_character, location)
+            space_type = internal.current_game.move_player_to_space_by_id(space_id, player_character, location)
 
             ServerProtocol.message_all_players("\n" + player_name + " moved " + player_character + " to " +
                                                space_id + ".\n")
 
             ServerProtocol.message_all_players(Display.display_board(internal.current_game.board))
-            sys.stdout.flush()
 
-            if internal.active_player < internal.expected_player:
-                internal.active_player += 1
-            else:
-                internal.active_player = 1
+            if space_type is 'Room':
+                internal.make_suggestion(player)
 
-            if internal.current_game is not None:
-                internal.begin_turn(internal.active_player)
+            internal.finish_turn()
 
     @staticmethod
-    def make_suggestion():
-        pass
+    def make_suggestion(player):
+        player_transport = player.get("transport")
+
+        ServerProtocol.message_current_player(player_transport, "\nPlease make a suggestion.")
+
+    @staticmethod
+    def handle_suggestion(suggestion):
+        player = internal.current_players.get(internal.active_player)
+        player_name = player.get("name")
+
+        pieces = suggestion.split(',')
+        char = pieces[0]
+        weapon = pieces[1]
+        room = pieces[2]
+
+        suggestion_string = "\n" + player_name + " suggested: " + char + " in the " + room + " with the " + \
+                            weapon + ".\n"
+
+        ServerProtocol.message_all_players(suggestion_string)
+
+        internal.finish_turn()
 
     @staticmethod
     def make_accusation():
         pass
 
+    @staticmethod
+    def finish_turn():
+        sys.stdout.flush()
+
+        if internal.active_player < internal.expected_player:
+            internal.active_player += 1
+        else:
+            internal.active_player = 1
+
+        if internal.current_game is not None:
+            internal.begin_turn(internal.active_player)
 
 
 class ServerProtocol(asyncio.Protocol):

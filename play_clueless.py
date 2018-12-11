@@ -38,15 +38,43 @@ def make_selection(message):
     return json.dumps(sys_call)
 
 
+def make_suggestion():
+    while True:
+        try:
+            char = input("\nPlease choose a character from the following: Miss Scarlet, Mrs White, Mrs Peacock, "
+                         "Col Mustard, Prof Plum, Mr Green \n")
+            weapon = input("\nPlease choose a weapon from the following: Rope, Lead Pipe, Knife, Wrench, "
+                           "Candlestick, Revolver \n")
+            room = input("\nPlease choose a room from the following: Study, Hall, Lounge, Library, Billiard Room,"
+                         "Dining Room, Conservatory, Ballroom, Kitchen \n")
+
+            vars = char + "," + weapon + "," + room
+
+            break
+
+        except ValueError:
+            print("\nSorry, I didn't understand that.")
+            # better try again... Return to the start of the loop
+            continue
+
+    print("\nGreat suggestion!\n")
+
+    sys_call = {"make_suggestion": vars}
+
+    return json.dumps(sys_call)
+
+
 def handle_message(message):
     if 'Please choose from the remaining characters:' in message:
         val = join_game(message)
-        return val
     elif 'Please enter the number associated with your chosen move:' in message:
         val = make_selection(message)
-        return val
+    elif 'Please make a suggestion' in message:
+        val = make_suggestion()
     else:
         print(message)
+        val = None
+    return val
 
 
 class ClientProtocol(asyncio.Protocol):
