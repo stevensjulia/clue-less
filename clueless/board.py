@@ -1,4 +1,3 @@
-
 # Game constants
 
 SUSPECT = 'Suspect'
@@ -212,7 +211,7 @@ class GameBoard:
             characters = self.spaces.get(space_id).suspects
             if characters is None:
                 return ""
-            elif isinstance(list, characters):
+            elif not isinstance(characters, list):
                 return ",".join(characters)
             else:
                 return characters
