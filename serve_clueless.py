@@ -232,11 +232,13 @@ class internal:
         active = internal.current_players.get(internal.active_player)
 
         if response is not None:
-            ServerProtocol.message_current_player(dis.get("transport"), "\n" + dis.get("name") +
-                                                  " can disprove:" + response)
+            ServerProtocol.message_current_player(active.get("transport"), "\n" + dis.get("name") +
+                                                  " can disprove: " + response)
             ServerProtocol.message_all_players("\n" + dis.get("name") + " was able to disprove part of " +
                                                active.get("name") + "'s suggestion.\n")
         else:
+            ServerProtocol.message_all_players("\n" + dis.get("name") + " was not able to disprove any of " +
+                                               active.get("name") + "'s suggestion.\n")
             if internal.disprover < internal.expected_players:
                 internal.disprover += 1
             else:

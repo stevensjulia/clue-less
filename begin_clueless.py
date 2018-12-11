@@ -98,11 +98,11 @@ def check_suggestion(c, w, r):
     while True:
         try:
             char = input("\nDo you have any evidence to disprove the current suggestion of " + c + " with the " + w +
-                         " in the " + r + "\n"
-                         "If you are able, please provide a character you know to be innocent: "
+                         " in the " + r + "?\n\n"
+                         "If you are able, please provide a character you know to be innocent: \n"
                          "Miss Scarlet, Mrs White, Mrs Peacock, Col Mustard, Prof Plum, Mr Green \n"
                          "If you have nothing to provide, please select enter. \n")
-            weapon = input("\nIf you are able, please provide a weapon you know to be innocent: "
+            weapon = input("\nIf you are able, please provide a weapon you know to be innocent: \n"
                            "\nRope, Lead Pipe, Knife, Wrench, Candlestick, Revolver \n"
                            "If you have nothing to provide, please select enter. \n")
             room = input("\nIf you are able, please provide a room you know to be innocent: \n"
