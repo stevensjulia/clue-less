@@ -197,7 +197,7 @@ class internal:
     def finish_turn():
         sys.stdout.flush()
 
-        if internal.active_player < internal.expected_player:
+        if internal.active_player < internal.expected_players:
             internal.active_player += 1
         else:
             internal.active_player = 1
