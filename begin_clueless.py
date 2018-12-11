@@ -131,7 +131,7 @@ def handle_message(message):
         val = make_suggestion(pieces[1])
     elif 'Please make an accusation' in message:
         val = make_accusation()
-    elif 'Do you have any information to share about the suggestion?' in message:
+    elif 'Do you have any information to share' in message:
         pieces = message.split('?')
         char = pieces[1]
         weapon = pieces[2]

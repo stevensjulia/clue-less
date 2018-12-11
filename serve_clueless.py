@@ -191,8 +191,6 @@ class internal:
 
         internal.check_suggestions(internal.active_player, internal.sugg_char, internal.sugg_weapon, internal.sugg_room)
 
-        internal.finish_turn()
-
     @staticmethod
     def check_suggestions(player_num, char, weapon, room):
         curr_player = player_num
