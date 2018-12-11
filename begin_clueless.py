@@ -59,6 +59,7 @@ class ClientProtocol(asyncio.Protocol):
 
     def connection_made(self, transport):
         transport.write(self.message.encode())
+        self.transport = transport
 
     def data_received(self, data):
         message = data.decode()
