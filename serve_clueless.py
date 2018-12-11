@@ -142,7 +142,6 @@ class internal:
         player = internal.current_players.get(internal.active_player)
         player_name = player.get("name")
         player_character = player.get("character")
-        player_transport = player.get("transport")
         location = internal.current_game.board.locate_character(player_character)
 
         data = actions.get('turn_selection')
@@ -163,8 +162,8 @@ class internal:
 
             if space_type is 'Room':
                 internal.make_suggestion(player)
-
-            internal.finish_turn()
+            else:
+                internal.finish_turn()
 
     @staticmethod
     def make_suggestion(player):
@@ -177,7 +176,7 @@ class internal:
         player = internal.current_players.get(internal.active_player)
         player_name = player.get("name")
 
-        pieces = suggestion.split(',')
+        pieces = suggestion.get('make_suggestion').split(',')
         char = pieces[0]
         weapon = pieces[1]
         room = pieces[2]
