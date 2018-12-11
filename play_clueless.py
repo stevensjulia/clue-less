@@ -64,6 +64,31 @@ def make_suggestion():
     return json.dumps(sys_call)
 
 
+def make_accusation():
+    while True:
+        try:
+            char = input("\nYou've entered a new room! You may now make a suggestion. \n"
+                         "Please choose a character from the following: "
+                         "Miss Scarlet, Mrs White, Mrs Peacock, Col Mustard, Prof Plum, Mr Green \n")
+            weapon = input("\nPlease choose a weapon from the following: "
+                           "\nRope, Lead Pipe, Knife, Wrench, Candlestick, Revolver \n")
+            room = input("\nPlease choose a room from the following: \n"
+                         "Study, Hall, Lounge, Library, Billiard Room, Dining Room, Conservatory, Ballroom, Kitchen \n")
+
+            vars = char + "," + weapon + "," + room
+
+            break
+
+        except ValueError:
+            print("\nSorry, I didn't understand that.")
+            # better try again... Return to the start of the loop
+            continue
+
+    sys_call = {"make_accusation": vars}
+
+    return json.dumps(sys_call)
+
+
 def handle_message(message):
     if 'Please choose from the remaining characters:' in message:
         val = join_game(message)
@@ -71,6 +96,8 @@ def handle_message(message):
         val = make_selection(message)
     elif 'Please make a suggestion' in message:
         val = make_suggestion()
+    elif 'Please make an accusation' in message:
+        val = make_accusation()
     else:
         print(message)
         val = None

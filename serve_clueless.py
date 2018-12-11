@@ -40,6 +40,9 @@ class internal:
         if 'make_suggestion' in actions:
             internal.handle_suggestion(actions)
 
+        if 'make_accusation' in actions:
+            internal.handle_accusation(actions)
+
 
     @staticmethod
     def begin_game():
@@ -192,7 +195,7 @@ class internal:
     def make_accusation(player):
         player_transport = player.get("transport")
 
-        ServerProtocol.message_current_player(player_transport, "\nPlease make a suggestion.")
+        ServerProtocol.message_current_player(player_transport, "\nPlease make an accusation.")
 
     @staticmethod
     def handle_accusation(suggestion):
