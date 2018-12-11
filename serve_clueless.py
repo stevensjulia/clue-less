@@ -54,7 +54,7 @@ class internal:
         player_name = data[0]
         character = data[1]
         if internal.num_players == 0:
-            expected_players = data[2]
+            internal.expected_players = data[2]
         internal.current_players[internal.num_players + 1] = {"name": player_name,
                                                               "character": character,
                                                               "transport": transport}
