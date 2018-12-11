@@ -189,8 +189,41 @@ class internal:
         internal.finish_turn()
 
     @staticmethod
-    def make_accusation():
-        pass
+    def make_accusation(player):
+        player_transport = player.get("transport")
+
+        ServerProtocol.message_current_player(player_transport, "\nPlease make a suggestion.")
+
+    @staticmethod
+    def handle_accusation(suggestion):
+        player = internal.current_players.get(internal.active_player)
+        player_name = player.get("name")
+
+        pieces = suggestion.get('make_accusation').split(',')
+        char = pieces[0]
+        weapon = pieces[1]
+        room = pieces[2]
+
+        result = internal.check_accusation(char, weapon, room)
+
+        if result is True:
+            ServerProtocol.message_all_players("\n" + player_name + " correctly accused " + char + " in the " + room +
+                                               " with the " + weapon + ".\n")
+            internal.terminate_game()
+        else:
+            ServerProtocol.message_all_players("\n" + player_name + " made an invalid accusation. They are no longer "
+                                                                    "active in the game.\n")
+            internal.remove_player_from_game(internal.active_player)
+
+            if len(internal.current_players.keys()) == 1:
+                internal.terminate_game()
+
+        internal.finish_turn()
+
+    @staticmethod
+    def check_accusation(char, weapon, room):
+        casefile = internal.current_game.case_file
+        return casefile.check_solution(char, weapon, room)
 
     @staticmethod
     def finish_turn():
@@ -203,6 +236,20 @@ class internal:
 
         if internal.current_game is not None:
             internal.begin_turn(internal.active_player)
+
+    @staticmethod
+    def go_to_next_valid_player():
+        player_valid = False
+        while not player_valid:
+            internal.active_player += 1
+            if internal.active_player not in internal.current_players:
+                continue
+            else:
+                player_valid = True
+
+    @staticmethod
+    def remove_player_from_game(player_num):
+        del internal.current_players[player_num]
 
 
 class ServerProtocol(asyncio.Protocol):
