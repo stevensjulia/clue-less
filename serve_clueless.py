@@ -162,10 +162,10 @@ class internal:
                 internal.finish_turn()
 
     @staticmethod
-    def make_suggestion(player):
+    def make_suggestion(player, space_id):
         player_transport = player.get("transport")
 
-        ServerProtocol.message_current_player(player_transport, "\nPlease make a suggestion.")
+        ServerProtocol.message_current_player(player_transport, "\nPlease make a suggestion in the" + space_id + ".")
 
     @staticmethod
     def handle_suggestion(suggestion, room):
