@@ -27,9 +27,27 @@ def begin_game():
     return json.dumps(sys_call)
 
 
+def make_selection(message):
+    while True:
+        try:
+            selection = input(message)
+            break
+
+        except ValueError:
+            print("\nSorry, I didn't understand that.")
+            # better try again... Return to the start of the loop
+            continue
+
+    sys_call = {"turn_selection": selection}
+    return json.dumps(sys_call)
+
+
 def handle_message(message):
-    print(message)
-    return None
+    if 'Please enter the number associated with your chosen move:' in message:
+        val = make_selection(message)
+        return val
+    else:
+        print(message)
 
 
 class ClientProtocol(asyncio.Protocol):

@@ -43,7 +43,7 @@ class internal:
         # initialize the game
         internal.current_game.initialize_game()
         ServerProtocol.message_all_players(Display.display_board(internal.current_game.board))
-        internal.begin_turn(1)
+        internal.begin_turn(0)
 
     @staticmethod
     def join_game(actions, transport):
