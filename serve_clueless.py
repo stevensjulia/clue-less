@@ -53,14 +53,13 @@ class internal:
         data = actions.get('join_game').split(',')
         player_name = data[0]
         character = data[1]
-        if internal.num_players == 0:
-            internal.expected_players = data[2]
         internal.current_players[internal.num_players + 1] = {"name": player_name,
                                                               "character": character,
                                                               "transport": transport}
 
         if internal.current_game is None:
             internal.current_game = Game()
+            expected_players = data[2]
             internal.expected_players = int(expected_players)
 
         # add player to game
