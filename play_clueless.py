@@ -38,7 +38,7 @@ def make_selection(message):
     return json.dumps(sys_call)
 
 
-def make_suggestion():
+def make_suggestion(room):
     while True:
         try:
             char = input("\nPlease choose a character from the following: Miss Scarlet, Mrs White, Mrs Peacock, "
@@ -48,8 +48,7 @@ def make_suggestion():
             #room = input("\nPlease choose a room from the following: Study, Hall, Lounge, Library, Billiard Room,"
             #             "Dining Room, Conservatory, Ballroom, Kitchen \n")
 
-            #vars = char + "," + weapon + "," + room
-            vars = char + "," + weapon
+            vars = char + "," + weapon + "," + room
 
             break
 
@@ -96,7 +95,8 @@ def handle_message(message):
     elif 'Please enter the number associated with your chosen move:' in message:
         val = make_selection(message)
     elif 'Please make a suggestion' in message:
-        val = make_suggestion()
+        pieces = message.split(':')
+        val = make_suggestion(pieces[1])
     elif 'Please make an accusation' in message:
         val = make_accusation()
     else:

@@ -165,17 +165,17 @@ class internal:
     def make_suggestion(player, space_id):
         player_transport = player.get("transport")
 
-        ServerProtocol.message_current_player(player_transport, "\nPlease make a suggestion in the" + space_id + ".")
+        ServerProtocol.message_current_player(player_transport, "\nPlease make a suggestion in the :" + space_id)
 
     @staticmethod
-    def handle_suggestion(suggestion, room):
+    def handle_suggestion(suggestion):
         player = internal.current_players.get(internal.active_player)
         player_name = player.get("name")
 
         pieces = suggestion.get('make_suggestion').split(',')
         char = pieces[0]
         weapon = pieces[1]
-        #room = pieces[2]
+        room = pieces[2]
 
         suggestion_string = "\n" + player_name + " suggested: " + char + " in the " + room + " with the " + \
                             weapon + ".\n"
