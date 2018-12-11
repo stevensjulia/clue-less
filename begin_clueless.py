@@ -48,6 +48,7 @@ def handle_message(message):
         return val
     else:
         print(message)
+        return None
 
 
 class ClientProtocol(asyncio.Protocol):
