@@ -43,7 +43,7 @@ class internal:
         # initialize the game
         internal.current_game.initialize_game()
         ServerProtocol.message_all_players(Display.display_board(internal.current_game.board))
-        internal.begin_turn(0)
+        internal.begin_turn(1)
 
     @staticmethod
     def join_game(actions, transport):
@@ -52,7 +52,7 @@ class internal:
         character = data[1]
         if internal.num_players == 0:
             expected_players = data[2]
-        internal.current_players[internal.num_players] = {"name": player_name,
+        internal.current_players[internal.num_players + 1] = {"name": player_name,
                                                           "character": character,
                                                           "transport": transport}
 
@@ -153,7 +153,6 @@ class internal:
         else:
             space_id = turn
             internal.current_game.move_player_to_space_by_id(space_id, player_character, location)
-
 
             ServerProtocol.message_all_players("\n" + player_name + " moved " + player_character + " to " +
                                                space_id + ".\n")
