@@ -184,8 +184,6 @@ class internal:
         suggestion_string = "\n" + player_name + " suggested: " + char + " in the " + room + " with the " + \
                             weapon + ".\n"
 
-        ServerProtocol.message_all_players(Display.display_board(internal.current_game.board))
-
         ServerProtocol.message_all_players(suggestion_string)
 
         internal.finish_turn()
